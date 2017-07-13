@@ -12,8 +12,8 @@ const fetch = (options) => {
     data,
     fetchType,
     url,
+    config,
   } = options
-
   const cloneData = lodash.cloneDeep(data)
 
   try {
@@ -51,7 +51,11 @@ const fetch = (options) => {
     url = `http://query.yahooapis.com/v1/public/yql?q=select * from json where url='${options.url}?${encodeURIComponent(qs.stringify(options.data))}'&format=json`
     data = null
   }
-
+  if(!config)config={}
+  config.data = cloneData
+  if(!config.headers )config.headers={}
+  config.headers['X-CSRF-TOKEN'] = getCookie('CSRF-TOKEN')
+  console.log(config)
   switch (method.toLowerCase()) {
     case 'get':
       return axios.get(url, {
@@ -62,16 +66,25 @@ const fetch = (options) => {
         data: cloneData,
       })
     case 'post':
-      return axios.post(url, cloneData)
+      return axios.post(url, cloneData, config)
     case 'put':
-      return axios.put(url, cloneData)
+      return axios.put(url, cloneData, config)
     case 'patch':
-      return axios.patch(url, cloneData)
+      return axios.patch(url, cloneData, config)
     default:
       return axios(options)
   }
 }
-
+// Operation Cookie
+export function getCookie(name) {
+  const reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)');
+  const arr = document.cookie.match(reg);
+  if (arr) {
+    return decodeURIComponent(arr[2]);
+  } else {
+    return null;
+  }
+}
 export default function request (options) {
   if (options.url && options.url.indexOf('//') > -1) {
     const origin = `${options.url.split('//')[0]}//${options.url.split('//')[1].split('/')[0]}`

@@ -2,19 +2,19 @@ const APIV1 = '/api/v1'
 const APIV2 = '/api/v2'
 
 module.exports = {
-  name: 'AntD Admin',
-  prefix: 'antdAdmin',
-  footerText: 'Ant Design Admin  © 2017 zuiidea',
+  name: 'albedoBoot',
+  prefix: 'albedoBoot',
+  footerText: 'albedoBoot  © 2017 somewhere',
   logo: '/logo.png',
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
-  YQL: ['http://www.zuimeitianqi.com'],
+  YQL: ['http://albedoboot.github.io'],
   CORS: [],
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {
-    userLogin: `${APIV1}/user/login`,
-    userLogout: `${APIV1}/user/logout`,
+    userLogin: `${APIV1}/authentication`,
+    userLogout: `${APIV1}/logout`,
     userInfo: `${APIV1}/userInfo`,
     users: `${APIV1}/users`,
     posts: `${APIV1}/posts`,
