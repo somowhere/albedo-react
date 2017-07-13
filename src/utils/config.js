@@ -13,9 +13,9 @@ module.exports = {
   openPages: ['/login'],
   apiPrefix: '/api/v1',
   api: {
-    userLogin: `${APIV1}/authentication`,
-    userLogout: `${APIV1}/logout`,
-    userInfo: `${APIV1}/userInfo`,
+    userLogin: `${APIV1}/user/login`,
+    userLogout: `${APIV1}/user/logout`,
+    account: `${APIV1}/account`,
     users: `${APIV1}/users`,
     posts: `${APIV1}/posts`,
     user: `${APIV1}/user/:id`,

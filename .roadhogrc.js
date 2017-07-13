@@ -10,18 +10,18 @@ export default {
   svgSpriteLoaderDirs: svgSpriteDirs,
   "theme": "./theme.config.js",
   // 接口代理示例
-  "proxy": {
-    "/api/v1": {
-      "target": "http://localhost:8070",
-      "changeOrigin": true,
-      // "pathRewrite": { "^/api/v1" : "/v1" }
-    },
-    "/api/v2": {
-      "target": "http://192.168.0.110",
-      "changeOrigin": true,
-      "pathRewrite": { "^/api/v2" : "/api/v2" }
-    }
-  },
+  // "proxy": {
+  //   "/api/v1": {
+  //     "target": "http://localhost:8070",
+  //     "changeOrigin": true,
+  //     // "pathRewrite": { "^/api/v1" : "/v1" }
+  //   },
+  //   "/api/v2": {
+  //     "target": "http://192.168.0.110",
+  //     "changeOrigin": true,
+  //     "pathRewrite": { "^/api/v2" : "/api/v2" }
+  //   }
+  // },
   "env": {
     "development": {
       "extraBabelPlugins": [
