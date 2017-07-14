@@ -16,7 +16,7 @@ module.exports = {
     userLogin: `${APIV1}/authentication`,
     userLogout: `${APIV1}/logout`,
     account: `${APIV1}/account`,
-    dict: `${APIV1}/account`,
+    dict: `${APIV1}/sys/dict/findDataRest`,
     users: `${APIV1}/sys/user/page`,
     posts: `${APIV1}/posts`,
     user: `${APIV1}/user/:id`,

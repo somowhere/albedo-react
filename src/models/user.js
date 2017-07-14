@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { create, remove, update } from '../services/user'
 import * as usersService from '../services/users'
+import * as dictsService from '../services/dicts'
 import { pageModel } from './common'
 import { config } from 'utils'
 
@@ -35,7 +36,8 @@ export default modelExtend(pageModel, {
 
     *query ({ payload = {} }, { call, put }) {
       const data = yield call(query, payload)
-      if (data) {
+      if (data.status=1 && data) {
+        const sysStatus = yield call(dictsService.queryAll, {code: 'sys_status'})
         yield put({
           type: 'querySuccess',
           payload: {
@@ -47,6 +49,9 @@ export default modelExtend(pageModel, {
             },
           },
         })
+        yield put({ type: 'queryDict', payload: {
+          sysStatus: sysStatus.data,
+        } })
       }
     },
 
@@ -96,7 +101,12 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-
+    queryDict (state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      }
+    },
     showModal (state, { payload }) {
       return { ...state, ...payload, modalVisible: true }
     },

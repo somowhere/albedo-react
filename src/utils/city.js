@@ -4049,7 +4049,7 @@ const tree = (list) => {
   return result
 }
 
-let DICT_FIXED = (function () {
+let CITY_FIXED = (function () {
   let fixed = []
   for (let id in DICT) {
     if ({}.hasOwnProperty.call(DICT, id)) {
@@ -4070,4 +4070,4 @@ let DICT_FIXED = (function () {
   return tree(fixed)
 }())
 
-module.exports = DICT_FIXED
+module.exports = CITY_FIXED

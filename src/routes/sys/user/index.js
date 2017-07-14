@@ -8,7 +8,7 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const User = ({ location, dispatch, user, loading }) => {
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = user
+  const { list, sysStatus, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = user
   const { pageSize } = pagination
 
   const modalProps = {
@@ -78,6 +78,7 @@ const User = ({ location, dispatch, user, loading }) => {
 
   const filterProps = {
     isMotion,
+    sysStatus,
     filter: {
       ...location.query,
     },

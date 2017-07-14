@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from '../../../utils/city'
+import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch, Select, Radio } from 'antd'
 import { parseJsonItemForm } from 'utils'
 
+const RadioGroup = Radio.Group;
 const Search = Input.Search
 const { RangePicker } = DatePicker
 
@@ -24,6 +24,7 @@ const TwoColProps = {
 
 const Filter = ({
   onAdd,
+  sysStatus,
   isMotion,
   switchIsMotion,
   onFilterChange,
@@ -42,9 +43,7 @@ const Filter = ({
     return fields
   }
 
-  const handleSubmit = () => {
-    let fields = getFieldsValue()
-    fields = handleFields(fields)
+  const parseSearchObj = (fields) => {
     let search = [
       {fieldName: 'loginId',
         analytiColumnPrefix: 'a',
@@ -57,10 +56,15 @@ const Filter = ({
         operate: 'between',
         value: fields['lastModifiedDate'][0],
         endValue: fields['lastModifiedDate'][1],
-
       },
     ]
-    onFilterChange(parseJsonItemForm(search))
+    return search;
+  }
+
+  const handleSubmit = () => {
+    let fields = getFieldsValue()
+    fields = handleFields(fields)
+    onFilterChange(parseJsonItemForm(parseSearchObj(fields)))
   }
 
   const handleReset = () => {
@@ -82,7 +86,7 @@ const Filter = ({
     let fields = getFieldsValue()
     fields[key] = values
     fields = handleFields(fields)
-    onFilterChange(fields)
+    onFilterChange(parseJsonItemForm(parseSearchObj(fields)))
   }
   const { name, status } = filter
 
@@ -93,7 +97,8 @@ const Filter = ({
   if (filter.lastModifiedDate && filter.lastModifiedDate[1]) {
     initialCreateTime[1] = moment(filter.lastModifiedDate[1])
   }
-
+  if(!sysStatus)sysStatus=[{label:'正常', value:0}]
+  console.log(sysStatus)
   return (
     <Row gutter={24}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
@@ -104,12 +109,8 @@ const Filter = ({
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         <FilterItem label="状态">
         {getFieldDecorator('status', { initialValue: status })(
-          <Cascader
-            size="large"
-            style={{ width: '100%' }}
-            options={city}
-            onChange={handleChange.bind(null, 'status')}
-          />)}
+          <RadioGroup options={sysStatus} onChange={handleChange.bind(null, 'status')} />
+          )}
         </FilterItem>
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
