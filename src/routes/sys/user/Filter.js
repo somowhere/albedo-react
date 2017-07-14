@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from 'components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from '../../utils/city'
+import city from '../../../utils/city'
+import { parseJsonItemForm } from 'utils'
 
 const Search = Input.Search
 const { RangePicker } = DatePicker
@@ -34,9 +35,9 @@ const Filter = ({
   },
 }) => {
   const handleFields = (fields) => {
-    const { createTime } = fields
-    if (createTime.length) {
-      fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
+    const { lastModifiedDate } = fields
+    if (lastModifiedDate.length) {
+      fields.lastModifiedDate = [lastModifiedDate[0].format('YYYY-MM-DD'), lastModifiedDate[1].format('YYYY-MM-DD')]
     }
     return fields
   }
@@ -44,7 +45,22 @@ const Filter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    onFilterChange(fields)
+    let search = [
+      {fieldName: 'loginId',
+        analytiColumnPrefix: 'a',
+        value: fields['loginId'],
+      },{fieldName: 'a.status_',
+        operate: 'in',
+        value: fields['status'],
+      },{fieldName: 'lastModifiedDate',
+        analytiColumnPrefix: 'a',
+        operate: 'between',
+        value: fields['lastModifiedDate'][0],
+        endValue: fields['lastModifiedDate'][1],
+
+      },
+    ]
+    onFilterChange(parseJsonItemForm(search))
   }
 
   const handleReset = () => {
@@ -68,35 +84,38 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { name, address } = filter
+  const { name, status } = filter
 
   let initialCreateTime = []
-  if (filter.createTime && filter.createTime[0]) {
-    initialCreateTime[0] = moment(filter.createTime[0])
+  if (filter.lastModifiedDate && filter.lastModifiedDate[0]) {
+    initialCreateTime[0] = moment(filter.lastModifiedDate[0])
   }
-  if (filter.createTime && filter.createTime[1]) {
-    initialCreateTime[1] = moment(filter.createTime[1])
+  if (filter.lastModifiedDate && filter.lastModifiedDate[1]) {
+    initialCreateTime[1] = moment(filter.lastModifiedDate[1])
   }
 
   return (
     <Row gutter={24}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="Search Name" size="large" onSearch={handleSubmit} />)}
+        <FilterItem label="登录编号">
+          {getFieldDecorator('loginId', { initialValue: name })(<Search size="large" onSearch={handleSubmit} />)}
+        </FilterItem>
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('address', { initialValue: address })(
+        <FilterItem label="状态">
+        {getFieldDecorator('status', { initialValue: status })(
           <Cascader
             size="large"
             style={{ width: '100%' }}
             options={city}
-            placeholder="Please pick an address"
-            onChange={handleChange.bind(null, 'address')}
+            onChange={handleChange.bind(null, 'status')}
           />)}
+        </FilterItem>
       </Col>
       <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }}>
-        <FilterItem label="Createtime">
-          {getFieldDecorator('createTime', { initialValue: initialCreateTime })(
-            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'createTime')} />
+        <FilterItem label="修改时间">
+          {getFieldDecorator('lastModifiedDate', { initialValue: initialCreateTime })(
+            <RangePicker style={{ width: '100%' }} size="large" onChange={handleChange.bind(null, 'lastModifiedDate')} />
           )}
         </FilterItem>
       </Col>

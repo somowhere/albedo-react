@@ -44,7 +44,7 @@ const User = ({ location, dispatch, user, loading }) => {
         query: {
           ...query,
           page: page.current,
-          pageSize: page.pageSize,
+          size: page.pageSize,
         },
       }))
     },
@@ -87,19 +87,19 @@ const User = ({ location, dispatch, user, loading }) => {
         query: {
           ...value,
           page: 1,
-          pageSize,
+          size: pageSize,
         },
       }))
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: '/user',
+        pathname: 'sys/user',
         query: {
           field: fieldsValue.field,
           keyword: fieldsValue.keyword,
         },
       })) : dispatch(routerRedux.push({
-        pathname: '/user',
+        pathname: 'sys/user',
       }))
     },
     onAdd () {

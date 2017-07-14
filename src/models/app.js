@@ -46,27 +46,14 @@ export default {
     *query ({
       payload,
     }, { call, put }) {
-      const { success, user } = yield call(query, payload)
-      if (success && user) {
-        const { list } = yield call(menusService.query)
-        const { permissions } = user
+      const {status, data}  = yield call(query, payload)
+      if (status==1 && data) {
+        const menuList = yield call(menusService.query,{type: 'menu', root: true})
         yield put({
           type: 'updateState',
           payload: {
-            user,
-            permissions,
-            menu: list.filter(item => {
-              if (permissions.role === EnumRoleType.ADMIN || permissions.role === EnumRoleType.DEVELOPER) {
-                return true
-              }
-              const cases = [
-                permissions.visit.includes(item.id),
-                item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
-                item.bpid ? permissions.visit.includes(item.bpid) : true,
-              ]
-              return cases.every(_ => _)
-            }
-          ),
+            user : data,
+            menu : menuList.data,
           },
         })
         if (location.pathname === '/login') {

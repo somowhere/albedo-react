@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import styles from './List.less'
 import classnames from 'classnames'
-import AnimTableBody from '../../components/DataTable/AnimTableBody'
+import AnimTableBody from '../../../components/DataTable/AnimTableBody'
 import { DropOption } from 'components'
 import { Link } from 'dva/router'
 
@@ -15,7 +15,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: 'Are you sure delete this record?',
+        title: '你确定要删除这条记录吗?',
         onOk () {
           onDeleteItem(record.id)
         },
@@ -25,50 +25,35 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
 
   const columns = [
     {
-      title: 'Avatar',
-      dataIndex: 'avatar',
-      key: 'avatar',
-      width: 64,
-      className: styles.avatar,
-      render: (text) => <img alt={'avatar'} width={24} src={text} />,
+      title: '所属组织',
+      dataIndex: 'orgName',
+      key: 'orgName',
+      // width: 64,
+      // className: styles.avatar,
+      // render: (text) => <img alt={'avatar'} width={24} src={text} />,
     }, {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: '登录Id',
+      dataIndex: 'loginId',
+      key: 'loginId',
       render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
     }, {
-      title: 'NickName',
-      dataIndex: 'nickName',
-      key: 'nickName',
-    }, {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    }, {
-      title: 'Gender',
-      dataIndex: 'isMale',
-      key: 'isMale',
-      render: (text) => <span>{text
-            ? 'Male'
-            : 'Female'}</span>,
-    }, {
-      title: 'Phone',
+      title: '电话',
       dataIndex: 'phone',
       key: 'phone',
     }, {
-      title: 'Email',
+      title: '邮箱',
       dataIndex: 'email',
       key: 'email',
     }, {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
     }, {
-      title: 'CreateTime',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      title: '修改时间',
+      dataIndex: 'lastModifiedDate',
+      key: 'lastModifiedDate',
     }, {
-      title: 'Operation',
+      title: '操作',
       key: 'operation',
       width: 100,
       render: (text, record) => {

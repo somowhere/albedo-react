@@ -18,10 +18,13 @@ const Bread = ({ menu }) => {
   }
 
   const getPathArray = (item) => {
-    pathArray.unshift(item)
-    if (item.bpid) {
-      getPathArray(queryArray(menu, item.bpid, 'id'))
+    if(item){
+      pathArray.unshift(item)
+      if (item.bpid) {
+        getPathArray(queryArray(menu, item.bpid, 'id'))
+      }
     }
+
   }
 
   if (!current) {

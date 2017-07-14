@@ -5,14 +5,14 @@ const { api } = config
 const { userLogin } = api
 
 export async function login (data) {
-  var config = {headers: {
-    'Content-Type' : 'application/x-www-form-urlencoded'
-  }};
+  // var config = {headers: {
+  //   'Content-Type' : 'application/x-www-form-urlencoded'
+  // }};
   data = querystring.stringify(data)
   return request({
     url: userLogin,
     method: 'post',
     data,
-    config,
+    // config,
   })
 }

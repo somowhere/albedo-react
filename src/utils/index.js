@@ -98,6 +98,40 @@ const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
   return result
 }
 
+/**
+ * 表单search对象
+ * @param   {Object}     fields
+ * @return  {Object}
+ */
+const parseJsonItemForm = (fields) => {
+  let data = lodash.cloneDeep(fields)
+  let result = []
+  let hash = {
+    format: 'yyyy-MM-dd HH:mm:ss',
+    fieldName: null,
+    attrType: 'String',
+    fieldNode: null,
+    weight: 0,
+    operate: 'like',
+    analytiColumn: true,
+    analytiColumnPrefix: null,
+    endValue: null,
+    value: null,
+  }
+  Object.keys(data).map((name, index) => {
+    let itemTemp = lodash.cloneDeep(hash);
+    const temp = data[name];
+    Object.keys(temp).map((nameTemp, index) => {
+      if(temp[nameTemp]){
+        itemTemp[nameTemp] = temp[nameTemp];
+      }
+    })
+    result.push(itemTemp);
+  })
+  return {queryConditionJson:JSON.stringify(result)};
+}
+
+
 module.exports = {
   config,
   request,
@@ -106,4 +140,5 @@ module.exports = {
   queryURL,
   queryArray,
   arrayToTree,
+  parseJsonItemForm,
 }

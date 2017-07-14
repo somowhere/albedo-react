@@ -21,7 +21,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {
-        if (location.pathname === '/user') {
+        if (location.pathname === '/sys/user/') {
           dispatch({
             type: 'query',
             payload: location.query,
@@ -43,7 +43,7 @@ export default modelExtend(pageModel, {
             pagination: {
               current: Number(payload.page) || 1,
               pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              total: data.recordsTotal,
             },
           },
         })
