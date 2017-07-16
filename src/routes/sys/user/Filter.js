@@ -5,7 +5,7 @@ import { FilterItem } from 'components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch, Select, Radio } from 'antd'
 import { parseJsonItemForm } from 'utils'
 
-const RadioGroup = Radio.Group;
+const RadioGroup = Radio.Group
 const Search = Input.Search
 const { RangePicker } = DatePicker
 
@@ -45,20 +45,23 @@ const Filter = ({
 
   const parseSearchObj = (fields) => {
     let search = [
-      {fieldName: 'loginId',
+      { fieldName: 'loginId',
         analytiColumnPrefix: 'a',
-        value: fields['loginId'],
-      },{fieldName: 'a.status_',
+        value: fields.loginId,
+      }, { fieldName: 'a.status_',
         operate: 'in',
-        value: fields['status'],
-      },{fieldName: 'lastModifiedDate',
+        analytiColumn: false,
+        value: (fields.status instanceof Object ? fields.status.target.value : fields.status),
+      }, { fieldName: 'lastModifiedDate',
         analytiColumnPrefix: 'a',
         operate: 'between',
-        value: fields['lastModifiedDate'][0],
-        endValue: fields['lastModifiedDate'][1],
+        value: fields.lastModifiedDate[0],
+        attrType: 'Date',
+        format: 'yyyy-MM-dd',
+        endValue: fields.lastModifiedDate[1],
       },
     ]
-    return search;
+    return search
   }
 
   const handleSubmit = () => {
@@ -97,8 +100,6 @@ const Filter = ({
   if (filter.lastModifiedDate && filter.lastModifiedDate[1]) {
     initialCreateTime[1] = moment(filter.lastModifiedDate[1])
   }
-  if(!sysStatus)sysStatus=[{label:'正常', value:0}]
-  console.log(sysStatus)
   return (
     <Row gutter={24}>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
@@ -108,8 +109,8 @@ const Filter = ({
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         <FilterItem label="状态">
-        {getFieldDecorator('status', { initialValue: status })(
-          <RadioGroup options={sysStatus} onChange={handleChange.bind(null, 'status')} />
+          {getFieldDecorator('status', { initialValue: status })(
+            <RadioGroup options={sysStatus} onChange={handleChange.bind(null, 'status')} />
           )}
         </FilterItem>
       </Col>

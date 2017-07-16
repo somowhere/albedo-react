@@ -55,7 +55,6 @@ const fetch = (options) => {
   config.data = cloneData
   if(!config.headers )config.headers={}
   config.headers['X-CSRF-TOKEN'] = getCookie('CSRF-TOKEN')
-  console.log(config)
   switch (method.toLowerCase()) {
     case 'get':
       return axios.get(url, {

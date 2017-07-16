@@ -107,7 +107,7 @@ const parseJsonItemForm = (fields) => {
   let data = lodash.cloneDeep(fields)
   let result = []
   let hash = {
-    format: 'yyyy-MM-dd HH:mm:ss',
+    format: null,
     fieldName: null,
     attrType: 'String',
     fieldNode: null,
@@ -119,14 +119,21 @@ const parseJsonItemForm = (fields) => {
     value: null,
   }
   Object.keys(data).map((name, index) => {
-    let itemTemp = lodash.cloneDeep(hash);
     const temp = data[name];
-    Object.keys(temp).map((nameTemp, index) => {
-      if(temp[nameTemp]){
-        itemTemp[nameTemp] = temp[nameTemp];
+    if(temp && temp.value) {
+      let itemTemp = lodash.cloneDeep(hash);
+
+      Object.keys(temp).map((nameTemp, index) => {
+        const itemValue = temp[nameTemp];
+        if(itemValue != null && itemValue != undefined) {
+          itemTemp[nameTemp] = temp[nameTemp];
+        }
+      })
+      if(itemTemp.attrType=='Date'&& !itemTemp.format){
+        itemTemp.format = 'yyyy-MM-dd HH:mm:ss'
       }
-    })
-    result.push(itemTemp);
+      result.push(itemTemp);
+    }
   })
   return {queryConditionJson:JSON.stringify(result)};
 }

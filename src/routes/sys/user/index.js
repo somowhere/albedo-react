@@ -14,9 +14,10 @@ const User = ({ location, dispatch, user, loading }) => {
   const modalProps = {
     item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
+    sysStatus,
     maskClosable: false,
     confirmLoading: loading.effects['user/update'],
-    title: `${modalType === 'create' ? 'Create User' : 'Update User'}`,
+    title: `${modalType === 'create' ? '添加用户' : '编辑用户'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({

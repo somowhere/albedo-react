@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal, Cascader } from 'antd'
-import city from '../../../utils/city'
 
 const FormItem = Form.Item
+const TextArea = Input.TextArea
+const RadioGroup = Radio.Group
 
 const formItemLayout = {
   labelCol: {
@@ -16,6 +17,7 @@ const formItemLayout = {
 
 const modal = ({
   item = {},
+  sysStatus,
   onOk,
   form: {
     getFieldDecorator,
@@ -46,7 +48,7 @@ const modal = ({
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
-        <FormItem label="Name" hasFeedback {...formItemLayout}>
+        <FormItem label="所属组织" hasFeedback {...formItemLayout}>
           {getFieldDecorator('name', {
             initialValue: item.name,
             rules: [
@@ -56,7 +58,7 @@ const modal = ({
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="NickName" hasFeedback {...formItemLayout}>
+        <FormItem label="登录Id" hasFeedback {...formItemLayout}>
           {getFieldDecorator('nickName', {
             initialValue: item.nickName,
             rules: [
@@ -66,7 +68,7 @@ const modal = ({
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="Gender" hasFeedback {...formItemLayout}>
+        <FormItem label="密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('isMale', {
             initialValue: item.isMale,
             rules: [
@@ -82,55 +84,64 @@ const modal = ({
             </Radio.Group>
           )}
         </FormItem>
-        <FormItem label="Age" hasFeedback {...formItemLayout}>
+        <FormItem label="确认密码" hasFeedback {...formItemLayout}>
           {getFieldDecorator('age', {
             initialValue: item.age,
             rules: [
               {
                 required: true,
-                type: 'number',
+                validator: {
+                  callback
+                }
               },
             ],
           })(<InputNumber min={18} max={100} />)}
         </FormItem>
-        <FormItem label="Phone" hasFeedback {...formItemLayout}>
+        <FormItem label="联系电话" hasFeedback {...formItemLayout}>
           {getFieldDecorator('phone', {
             initialValue: item.phone,
             rules: [
               {
                 required: true,
                 pattern: /^1[34578]\d{9}$/,
-                message: 'The input is not valid phone!',
+                message: '请输入有效的电话!',
               },
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="E-mail" hasFeedback {...formItemLayout}>
+        <FormItem label="状态" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('status', {
+            initialValue: item.status,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<RadioGroup options={sysStatus} />)}
+        </FormItem>
+
+        <FormItem label="邮箱" hasFeedback {...formItemLayout}>
           {getFieldDecorator('email', {
             initialValue: item.email,
             rules: [
               {
-                required: true,
                 pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
-                message: 'The input is not valid E-mail!',
+                message: '请输入有效的邮箱!',
               },
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem label="Address" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('address', {
-            initialValue: item.address && item.address.split(' '),
+        <FormItem label="描述" hasFeedback {...formItemLayout}>
+          {getFieldDecorator('description', {
+            initialValue: item.description,
             rules: [
               {
                 required: true,
               },
             ],
-          })(<Cascader
+          })(<TextArea
             size="large"
-            style={{ width: '100%' }}
-            options={city}
-            placeholder="Pick an address"
-          />)}
+            style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
     </Modal>
