@@ -1,12 +1,16 @@
 import modelExtend from 'dva-model-extend'
-import { create, remove, update } from '../services/user'
-import * as usersService from '../services/users'
-import * as dictsService from '../services/dicts'
+import { page, query, save, doLock, doRemove } from '../services/user'
+import * as dictService from '../services/dict'
+import * as roleService from '../services/role'
+import * as orgService from '../services/org'
 import { pageModel } from './common'
 import { config } from 'utils'
-
-const { query } = usersService
 const { prefix } = config
+
+const { dictSelect } = dictService
+const { roleSelect } = roleService
+const { orgTree } = orgService
+
 
 export default modelExtend(pageModel, {
   namespace: 'user',
@@ -35,9 +39,8 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(page, payload)
       if (data.status=1 && data) {
-        const sysStatus = yield call(dictsService.queryAll, {code: 'sys_status'})
         yield put({
           type: 'querySuccess',
           payload: {
@@ -49,64 +52,113 @@ export default modelExtend(pageModel, {
             },
           },
         })
-        yield put({ type: 'queryDict', payload: {
+        const sysStatus = yield call(dictSelect, {code: 'sys_status'})
+        yield put({ type: 'queryData', payload: {
           sysStatus: sysStatus.data,
+        } })
+        const treeOrgData = yield call(orgTree)
+        yield put({ type: 'queryData', payload: {
+          treeOrgData: treeOrgData.data,
+        } })
+        const roleSelectData = yield call(roleSelect)
+        yield put({ type: 'queryData', payload: {
+          roleSelectData: roleSelectData.data,
+        } })
+      }
+    },
+    *info ({ payload = {} }, { call, put }) {
+      const data = yield call(query, payload)
+      if (data.status=1 && data) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data,
+            pagination: {
+              current: Number(payload.page) || 1,
+              pageSize: Number(payload.pageSize) || 10,
+              total: data.recordsTotal,
+            },
+          },
+        })
+        const sysStatus = yield call(dictSelect, {code: 'sys_status'})
+        yield put({ type: 'queryData', payload: {
+          sysStatus: sysStatus.data,
+        } })
+        const treeOrgData = yield call(orgTree)
+        yield put({ type: 'queryData', payload: {
+          treeOrgData: treeOrgData.data,
+        } })
+        const roleSelectData = yield call(roleSelect)
+        yield put({ type: 'queryData', payload: {
+          roleSelectData: roleSelectData.data,
         } })
       }
     },
 
-    *'delete' ({ payload }, { call, put, select }) {
-      const data = yield call(remove, { id: payload })
+    *'lock' ({ payload }, { call, put, select }) {
+      const data = yield call(doLock, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
-      if (data.success) {
+      if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw data.message
+      }
+    },
+
+    *'delete' ({ payload }, { call, put, select }) {
+      const data = yield call(doRemove, { id: payload })
+      const { selectedRowKeys } = yield select(_ => _.user)
+      if (data.status==1) {
+        yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
+        yield put({ type: 'query' })
+      } else {
+        throw data.message
       }
     },
 
     *'multiDelete' ({ payload }, { call, put }) {
-      const data = yield call(usersService.remove, payload)
-      if (data.success) {
+      const data = yield call(doRemove, payload)
+      if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw data.message
       }
     },
 
     *create ({ payload }, { call, put }) {
-      const data = yield call(create, payload)
-      if (data.success) {
+      const data = yield call(save, payload)
+      if (data.status==1) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw data.message
       }
     },
 
     *update ({ payload }, { select, call, put }) {
       const id = yield select(({ user }) => user.currentItem.id)
       const newUser = { ...payload, id }
-      const data = yield call(update, newUser)
-      if (data.success) {
+      const data = yield call(save, newUser)
+      if (data.status==1) {
         yield put({ type: 'hideModal' })
         yield put({ type: 'query' })
       } else {
-        throw data
+        throw data.message
       }
     },
 
   },
 
   reducers: {
-    queryDict (state, action) {
+    queryData (state, action) {
       return {
         ...state,
         ...action.payload,
       }
     },
+
     showModal (state, { payload }) {
       return { ...state, ...payload, modalVisible: true }
     },

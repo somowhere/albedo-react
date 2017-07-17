@@ -1,12 +1,13 @@
 import { request, config } from 'utils'
-const { api } = config
-const { moduleModule } = api
-const { tree } = moduleModule
 
-export async function query (params) {
+const { api } = config
+const { orgModule } = api
+const { tree } = orgModule
+
+export async function orgTree (data) {
   return request({
     url: tree,
     method: 'get',
-    data: params,
+    data,
   })
 }

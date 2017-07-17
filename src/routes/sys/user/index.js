@@ -8,13 +8,15 @@ import Filter from './Filter'
 import Modal from './Modal'
 
 const User = ({ location, dispatch, user, loading }) => {
-  const { list, sysStatus, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = user
+  const { list, sysStatus, treeOrgData, roleSelectData, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = user
   const { pageSize } = pagination
 
   const modalProps = {
     item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
     sysStatus,
+    treeOrgData,
+    roleSelectData,
     maskClosable: false,
     confirmLoading: loading.effects['user/update'],
     title: `${modalType === 'create' ? '添加用户' : '编辑用户'}`,
