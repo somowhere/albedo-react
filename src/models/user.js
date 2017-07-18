@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import { page, query, save, doLock, doRemove } from '../services/user'
+import { page, info, save, doLock, doRemove } from '../services/user'
 import * as dictService from '../services/dict'
 import * as roleService from '../services/role'
 import * as orgService from '../services/org'
@@ -56,7 +56,7 @@ export default modelExtend(pageModel, {
         yield put({ type: 'queryData', payload: {
           sysStatus: sysStatus.data,
         } })
-        const treeOrgData = yield call(orgTree)
+        const treeOrgData = yield call(orgTree, {all: true})
         yield put({ type: 'queryData', payload: {
           treeOrgData: treeOrgData.data,
         } })
@@ -66,37 +66,21 @@ export default modelExtend(pageModel, {
         } })
       }
     },
-    *info ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
-      if (data.status=1 && data) {
-        yield put({
-          type: 'querySuccess',
-          payload: {
-            list: data.data,
-            pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.recordsTotal,
+    *'info' ({ payload = {} }, { call, put }) {
+      const dataItem = yield call(info, { id: payload.id })
+        if (dataItem && dataItem.status==1) {
+          yield put({
+            type: 'showModal',
+            payload: {
+              modalType: payload.modalType,
+              currentItem: dataItem.data,
             },
-          },
-        })
-        const sysStatus = yield call(dictSelect, {code: 'sys_status'})
-        yield put({ type: 'queryData', payload: {
-          sysStatus: sysStatus.data,
-        } })
-        const treeOrgData = yield call(orgTree)
-        yield put({ type: 'queryData', payload: {
-          treeOrgData: treeOrgData.data,
-        } })
-        const roleSelectData = yield call(roleSelect)
-        yield put({ type: 'queryData', payload: {
-          roleSelectData: roleSelectData.data,
-        } })
-      }
+          })
+        }
     },
 
     *'lock' ({ payload }, { call, put, select }) {
-      const data = yield call(doLock, { id: payload })
+      const data = yield call(doLock, { ids: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
       if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -107,7 +91,7 @@ export default modelExtend(pageModel, {
     },
 
     *'delete' ({ payload }, { call, put, select }) {
-      const data = yield call(doRemove, { id: payload })
+      const data = yield call(doRemove, { ids: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
       if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })

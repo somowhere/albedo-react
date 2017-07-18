@@ -20,10 +20,15 @@ export async function info (params) {
 }
 
 export async function save (params) {
+  var config = {headers: {
+    'Content-Type' : 'application/json'
+  }};
+  params = JSON.stringify(params)
   return request({
     url: user,
     method: 'post',
     data: params,
+    config,
   })
 }
 
@@ -38,7 +43,7 @@ export async function doLock (params) {
 export async function doRemove (params) {
   return request({
     url: remove,
-    method: 'delete',
+    method: 'post',
     data: params,
   })
 }

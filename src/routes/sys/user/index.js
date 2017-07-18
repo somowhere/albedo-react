@@ -57,12 +57,18 @@ const User = ({ location, dispatch, user, loading }) => {
         payload: id,
       })
     },
+    onLockItem (id) {
+      dispatch({
+        type: 'user/lock',
+        payload: id,
+      })
+    },
     onEditItem (item) {
       dispatch({
-        type: 'user/showModal',
+        type: 'user/info',
         payload: {
           modalType: 'update',
-          currentItem: item,
+          id: item.id,
         },
       })
     },

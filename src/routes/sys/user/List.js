@@ -9,11 +9,18 @@ import { Link } from 'dva/router'
 
 const confirm = Modal.confirm
 
-const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+const List = ({ onDeleteItem, onLockItem, onEditItem, isMotion, location, ...tableProps }) => {
   const handleMenuClick = (record, e) => {
     if (e.key === '1') {
       onEditItem(record)
     } else if (e.key === '2') {
+      confirm({
+        title: '你确定要操作这条记录吗?',
+        onOk () {
+          onLockItem(record.id)
+        },
+      })
+    } else if (e.key === '3') {
       confirm({
         title: '你确定要删除这条记录吗?',
         onOk () {
@@ -57,7 +64,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Update' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '编辑' }, { key: '2', name: record.status =='正常' ? '锁定' : '解锁' }, { key: '3', name: '删除' }]} />
       },
     },
   ]
@@ -87,6 +94,7 @@ const List = ({ onDeleteItem, onEditItem, isMotion, location, ...tableProps }) =
 
 List.propTypes = {
   onDeleteItem: PropTypes.func,
+  onLockItem: PropTypes.func,
   onEditItem: PropTypes.func,
   isMotion: PropTypes.bool,
   location: PropTypes.object,

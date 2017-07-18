@@ -56,7 +56,7 @@ const modal = ({
     }
   }
   // 生成树状
-  const orgTree = arrayToTree(treeOrgData.filter(_ => _.pid), 'id', 'pid')
+  const orgTree = arrayToTree(treeOrgData, 'id', 'pid')
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
