@@ -155,6 +155,7 @@ const modal = ({
           })(<TextArea
             size="large"
             style={{width: '100%'}}/>)}
+            style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
     </Modal>
