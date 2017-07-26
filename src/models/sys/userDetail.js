@@ -1,6 +1,5 @@
 import pathToRegexp from 'path-to-regexp'
-import { query } from '../../services/user'
-
+import { info} from '../../services/sys/user'
 export default {
 
   namespace: 'userDetail',
@@ -12,7 +11,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(() => {
-        const match = pathToRegexp('/user/:id').exec(location.pathname)
+        const match = pathToRegexp('/sys/user/detail/:id').exec(location.pathname)
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
@@ -24,7 +23,7 @@ export default {
     *query ({
       payload,
     }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(info, payload)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({

@@ -42,7 +42,7 @@ const List = ({ onDeleteItem, onLockItem, onEditItem, isMotion, location, ...tab
       title: '登录Id',
       dataIndex: 'loginId',
       key: 'loginId',
-      render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
+      render: (text, record) => <Link to={`detail/${record.id}`}>{text}</Link>,
     }, {
       title: '电话',
       dataIndex: 'phone',

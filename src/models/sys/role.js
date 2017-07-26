@@ -1,9 +1,10 @@
 import modelExtend from 'dva-model-extend'
-import { page, info, save, doLock, doRemove } from '../services/user'
-import * as dictService from '../services/dict'
-import * as roleService from '../services/role'
-import * as orgService from '../services/org'
-import { pageModel } from './common'
+import { page, info, save, doLock, doRemove } from '../../services/sys/role'
+import * as dictService from '../../services/sys/dict'
+import * as roleService from '../../services/sys/role'
+import * as orgService from '../../services/sys/org'
+import * as menusService from '../../services/menus'
+import { pageModel } from '../common'
 import { config } from 'utils'
 const { prefix } = config
 
@@ -13,20 +14,20 @@ const { orgTree } = orgService
 
 
 export default modelExtend(pageModel, {
-  namespace: 'user',
+  namespace: 'role',
 
   state: {
     currentItem: {},
     modalVisible: false,
     modalType: 'create',
     selectedRowKeys: [],
-    isMotion: localStorage.getItem(`${prefix}userIsMotion`) === 'true',
+    isMotion: localStorage.getItem(`${prefix}roleIsMotion`) === 'true',
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {
-        if (location.pathname === '/sys/user/') {
+        if (location.pathname === '/sys/role/') {
           dispatch({
             type: 'query',
             payload: location.query,
@@ -39,6 +40,7 @@ export default modelExtend(pageModel, {
   effects: {
 
     *query ({ payload = {} }, { call, put }) {
+
       const data = yield call(page, payload)
       if (data.status=1 && data) {
         yield put({
@@ -52,17 +54,15 @@ export default modelExtend(pageModel, {
             },
           },
         })
-        const sysStatus = yield call(dictSelect, {code: 'sys_status'})
-        yield put({ type: 'queryData', payload: {
-          sysStatus: sysStatus.data,
-        } })
+        const dictData = yield call(dictSelect, {dictQueries:JSON.stringify([{code: 'sys_status'},{code: 'sys_yes_no'},{code: 'sys_role_scope'}])})
+        yield put({ type: 'queryData', payload: dictData.data })
         const treeOrgData = yield call(orgTree, {all: true})
         yield put({ type: 'queryData', payload: {
           treeOrgData: treeOrgData.data,
         } })
-        const roleSelectData = yield call(roleSelect)
+        const moduleData = yield call(menusService.query)
         yield put({ type: 'queryData', payload: {
-          roleSelectData: roleSelectData.data,
+          moduleData: moduleData.data,
         } })
       }
     },
@@ -81,7 +81,7 @@ export default modelExtend(pageModel, {
 
     *'lock' ({ payload }, { call, put, select }) {
       const data = yield call(doLock, { ids: payload })
-      const { selectedRowKeys } = yield select(_ => _.user)
+      const { selectedRowKeys } = yield select(_ => _.role)
       if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
@@ -92,7 +92,7 @@ export default modelExtend(pageModel, {
 
     *'delete' ({ payload }, { call, put, select }) {
       const data = yield call(doRemove, { ids: payload })
-      const { selectedRowKeys } = yield select(_ => _.user)
+      const { selectedRowKeys } = yield select(_ => _.role)
       if (data.status==1) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
         yield put({ type: 'query' })
@@ -122,7 +122,7 @@ export default modelExtend(pageModel, {
     },
 
     *update ({ payload }, { select, call, put }) {
-      const id = yield select(({ user }) => user.currentItem.id)
+      const id = yield select(({ role }) => role.currentItem.id)
       const newUser = { ...payload, id }
       const data = yield call(save, newUser)
       if (data.status==1) {
@@ -152,7 +152,7 @@ export default modelExtend(pageModel, {
     },
 
     switchIsMotion (state) {
-      localStorage.setItem(`${prefix}userIsMotion`, !state.isMotion)
+      localStorage.setItem(`${prefix}roleIsMotion`, !state.isMotion)
       return { ...state, isMotion: !state.isMotion }
     },
 
