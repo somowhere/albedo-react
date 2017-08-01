@@ -1,15 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { page, info, save, doLock, doRemove } from '../../services/sys/role'
 import * as dictService from '../../services/sys/dict'
-import * as roleService from '../../services/sys/role'
 import * as orgService from '../../services/sys/org'
-import * as menusService from '../../services/menus'
+import * as moduleService from '../../services/sys/module'
 import { pageModel } from '../common'
 import { config } from 'utils'
 const { prefix } = config
 
 const { dictSelect } = dictService
-const { roleSelect } = roleService
 const { orgTree } = orgService
 
 
@@ -60,7 +58,7 @@ export default modelExtend(pageModel, {
         yield put({ type: 'queryData', payload: {
           treeOrgData: treeOrgData.data,
         } })
-        const moduleData = yield call(menusService.query)
+        const moduleData = yield call(moduleService.query)
         yield put({ type: 'queryData', payload: {
           moduleData: moduleData.data,
         } })

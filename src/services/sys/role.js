@@ -34,7 +34,7 @@ export async function save (params) {
   }};
   params = JSON.stringify(params)
   return request({
-    url: user,
+    url: role,
     method: 'post',
     data: params,
     config,

@@ -53,8 +53,6 @@ const modal = ({
   // 生成树状
   const orgTree = arrayToTree(treeOrgData, 'id', 'pid')
   const moduleTree = arrayToTree(moduleData, 'id', 'pid')
-
-
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
@@ -98,15 +96,15 @@ const modal = ({
         </FormItem>
 
         <FormItem label="是否系统数据" hasFeedback {...formItemLayout}>
-          {getFieldDecorator('sysDate', {
-            initialValue: item.sysDate,
+          {getFieldDecorator('sysData', {
+            initialValue: item.sysData,
             rules: [
               {
                 required: true,
                 message: '请选择系统数据',
               },
             ],
-          })(<RadioGroup options={sysYesNo}/>)}
+          })(<RadioGroup options={sysYesNo} value={item.sysData}/>)}
         </FormItem>
         <FormItem label="拥有权限" hasFeedback {...formItemLayout}>
           {getFieldDecorator('moduleIdList', {
@@ -120,6 +118,7 @@ const modal = ({
           })(<TreeSelect
             dropdownStyle={{maxHeight: 400, overflow: 'auto'}}
             treeData={moduleTree}
+            treeCheckable
             treeDefaultExpandAll
           />)}
         </FormItem>

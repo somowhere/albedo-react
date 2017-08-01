@@ -40,6 +40,7 @@ module.exports = {
     moduleModule: {
       module: `${APIV1}/sys/module/`,
       tree: `${APIV1}/sys/module/findTreeData`,
+      menu: `${APIV1}/sys/module/findMenuData`,
       query: `${APIV1}/sys/module/:id`,
       remove: `${APIV1}/sys/module/delete/:ids`,
       lock: `${APIV1}/sys/module/lock/:ids`,
