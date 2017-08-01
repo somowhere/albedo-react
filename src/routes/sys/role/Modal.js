@@ -53,6 +53,7 @@ const modal = ({
   // 生成树状
   const orgTree = arrayToTree(treeOrgData, 'id', 'pid')
   const moduleTree = arrayToTree(moduleData, 'id', 'pid')
+  console.log(item.status);
   return (
     <Modal {...modalOpts}>
       <Form layout="horizontal">
@@ -85,7 +86,7 @@ const modal = ({
 
         <FormItem label="数据权限" hasFeedback {...formItemLayout}>
           {getFieldDecorator('dataScope', {
-            initialValue: item.dataScope,
+            initialValue: item.dataScope+'',
             rules: [
               {
                 required: true,
@@ -97,15 +98,16 @@ const modal = ({
 
         <FormItem label="是否系统数据" hasFeedback {...formItemLayout}>
           {getFieldDecorator('sysData', {
-            initialValue: item.sysData,
+            initialValue: item.sysData+'',
             rules: [
               {
                 required: true,
                 message: '请选择系统数据',
               },
             ],
-          })(<RadioGroup options={sysYesNo} value={item.sysData}/>)}
+          })(<RadioGroup options={sysYesNo}/>)}
         </FormItem>
+
         <FormItem label="拥有权限" hasFeedback {...formItemLayout}>
           {getFieldDecorator('moduleIdList', {
             initialValue: item.moduleIdList,
@@ -126,14 +128,14 @@ const modal = ({
 
         <FormItem label="状态" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
-            initialValue: item.status,
+            initialValue: item.status+'',
             rules: [
               {
                 required: true,
                 message: '请选择状态',
               },
             ],
-          })(<RadioGroup options={sysStatus}/>)}
+          })(<RadioGroup options={sysStatus} value={item.status}/>)}
         </FormItem>
 
 

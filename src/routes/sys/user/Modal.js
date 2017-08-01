@@ -135,7 +135,7 @@ const modal = ({
         </FormItem>
         <FormItem label="状态" hasFeedback {...formItemLayout}>
           {getFieldDecorator('status', {
-            initialValue: item.status,
+            initialValue: item.status+'',
             rules: [
               {
                 required: true,
@@ -144,8 +144,6 @@ const modal = ({
             ],
           })(<RadioGroup options={sysStatus}/>)}
         </FormItem>
-
-
         <FormItem label="描述" hasFeedback {...formItemLayout}>
           {getFieldDecorator('description', {
             initialValue: item.description,
@@ -155,7 +153,6 @@ const modal = ({
           })(<TextArea
             size="large"
             style={{width: '100%'}}/>)}
-            style={{ width: '100%' }} />)}
         </FormItem>
       </Form>
     </Modal>
