@@ -51,7 +51,15 @@ const Routers = function ({ history, app }) {
             require.ensure([], require => {
               registerModel(app, require('./models/sys/role'))
               cb(null, require('./routes/sys/role/'))
-            }, 'user')
+            }, 'role')
+          },
+        }, {
+          path: 'sys/org',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/sys/org'))
+              cb(null, require('./routes/sys/org/'))
+            }, 'org')
           },
         }, {
           path: 'login',
