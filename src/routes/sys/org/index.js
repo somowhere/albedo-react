@@ -2,13 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Row, Col, Button, Popconfirm } from 'antd'
+import { Row, Col, Button, Popconfirm, Layout } from 'antd'
+const { Sider, Content } = Layout;
 import List from './List'
+import TreeShow from './TreeShow'
+import styles from './index.less'
 import Filter from './Filter'
 import Modal from './Modal'
+import {arrayToTree, queryArray} from "utils";
 
-const User = ({ location, dispatch, role, loading }) => {
-  const { list, sysStatus,sysYesNo,sysRoleScope, treeOrgData, moduleData, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = role
+const User = ({ location, dispatch, org, loading }) => {
+  const { list, sysStatus,sysYesNo, treeOrgData, moduleData, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys } = org
   const { pageSize } = pagination
 
   const modalProps = {
@@ -16,29 +20,33 @@ const User = ({ location, dispatch, role, loading }) => {
     visible: modalVisible,
     sysStatus,
     sysYesNo,
-    sysRoleScope,
     treeOrgData,
     moduleData,
     maskClosable: false,
-    confirmLoading: loading.effects['role/update'],
+    confirmLoading: loading.effects['org/update'],
     title: `${modalType === 'create' ? '添加角色' : '编辑角色'}`,
     wrapClassName: 'vertical-center-modal',
     onOk (data) {
       dispatch({
-        type: `role/${modalType}`,
+        type: `org/${modalType}`,
         payload: data,
       })
     },
     onCancel () {
       dispatch({
-        type: 'role/hideModal',
+        type: 'org/hideModal',
       })
     },
   }
-
+  const siderProps = {
+    darkTheme: 'light',
+  }
+  const treeProps = {
+    treeOrgData,
+  }
   const listProps = {
     dataSource: list,
-    loading: loading.effects['role/query'],
+    loading: loading.effects['org/query'],
     pagination,
     location,
     isMotion,
@@ -55,19 +63,19 @@ const User = ({ location, dispatch, role, loading }) => {
     },
     onDeleteItem (id) {
       dispatch({
-        type: 'role/delete',
+        type: 'org/delete',
         payload: id,
       })
     },
     onLockItem (id) {
       dispatch({
-        type: 'role/lock',
+        type: 'org/lock',
         payload: id,
       })
     },
     onEditItem (item) {
       dispatch({
-        type: 'role/info',
+        type: 'org/info',
         payload: {
           modalType: 'update',
           id: item.id,
@@ -78,7 +86,7 @@ const User = ({ location, dispatch, role, loading }) => {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
-          type: 'role/updateState',
+          type: 'org/updateState',
           payload: {
             selectedRowKeys: keys,
           },
@@ -86,7 +94,6 @@ const User = ({ location, dispatch, role, loading }) => {
       },
     },
   }
-
   const filterProps = {
     isMotion,
     sysStatus,
@@ -106,31 +113,31 @@ const User = ({ location, dispatch, role, loading }) => {
     },
     onSearch (fieldsValue) {
       fieldsValue.keyword.length ? dispatch(routerRedux.push({
-        pathname: 'sys/role',
+        pathname: 'sys/org',
         query: {
           field: fieldsValue.field,
           keyword: fieldsValue.keyword,
         },
       })) : dispatch(routerRedux.push({
-        pathname: 'sys/role',
+        pathname: 'sys/org',
       }))
     },
     onAdd () {
       dispatch({
-        type: 'role/showModal',
+        type: 'org/showModal',
         payload: {
           modalType: 'create',
         },
       })
     },
     switchIsMotion () {
-      dispatch({ type: 'role/switchIsMotion' })
+      dispatch({ type: 'org/switchIsMotion' })
     },
   }
 
   const handleDeleteItems = () => {
     dispatch({
-      type: 'role/multiDelete',
+      type: 'org/multiDelete',
       payload: {
         ids: selectedRowKeys,
       },
@@ -138,30 +145,36 @@ const User = ({ location, dispatch, role, loading }) => {
   }
 
   return (
-    <div className="content-inner">
-      <Filter {...filterProps} />
-      {
-         selectedRowKeys.length > 0 &&
-           <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
-             <Col>
-               {`选中 ${selectedRowKeys.length} 项 `}
-               <Popconfirm title={'你确定要删除选中列吗?'} placement="left" onConfirm={handleDeleteItems}>
-                 <Button type="primary" size="large" style={{ marginLeft: 8 }}>删除</Button>
-               </Popconfirm>
-             </Col>
-           </Row>
-      }
-      <List {...listProps} />
-      {modalVisible && <Modal {...modalProps} />}
+    <div>
+      <Layout>
+        <Sider {...siderProps}>1<TreeShow {...treeProps} /></Sider>
+        <Content className="content-inner">
+          <Filter {...filterProps} />
+          {
+            selectedRowKeys.length > 0 &&
+            <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
+              <Col>
+                {`选中 ${selectedRowKeys.length} 项 `}
+                <Popconfirm title={'你确定要删除选中列吗?'} placement="left" onConfirm={handleDeleteItems}>
+                  <Button type="primary" size="large" style={{ marginLeft: 8 }}>删除</Button>
+                </Popconfirm>
+              </Col>
+            </Row>
+          }
+          <List {...listProps} />
+          {modalVisible && <Modal {...modalProps} />}
+          </Content>
+      </Layout>
+
     </div>
   )
 }
 
 User.propTypes = {
-  role: PropTypes.object,
+  org: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ role, loading }) => ({ role, loading }))(User)
+export default connect(({ org, loading }) => ({ org, loading }))(User)

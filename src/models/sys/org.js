@@ -55,6 +55,7 @@ export default modelExtend(pageModel, {
         const dictData = yield call(dictSelect, {dictQueries:JSON.stringify([{code: 'sys_status'},{code: 'sys_yes_no'},{code: 'sys_org_scope'}])})
         yield put({ type: 'queryData', payload: dictData.data })
         const treeOrgData = yield call(orgTree, {all: true})
+        console.log(treeOrgData.data)
         yield put({ type: 'queryData', payload: {
           treeOrgData: treeOrgData.data,
         } })

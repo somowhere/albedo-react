@@ -7,7 +7,6 @@ import { parseJsonItemForm } from 'utils'
 
 const RadioGroup = Radio.Group
 const Search = Input.Search
-const { RangePicker } = DatePicker
 
 const ColProps = {
   xs: 24,
@@ -40,9 +39,6 @@ const Filter = ({
     let search = [
       { fieldName: 'name',
         value: fields.loginId,
-      }, { fieldName: 'sysData',
-        operate: 'in',
-        value: (fields.sysData instanceof Object ? fields.sysData.target.value : fields.sysData),
       }, { fieldName: 'status',
         operate: 'in',
         value: (fields.status instanceof Object ? fields.status.target.value : fields.status),
@@ -83,13 +79,6 @@ const Filter = ({
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
         <FilterItem label="名称">
           {getFieldDecorator('name', { initialValue: name })(<Search size="large" onSearch={handleSubmit} />)}
-        </FilterItem>
-      </Col>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        <FilterItem label="系统数据">
-          {getFieldDecorator('sysData', { initialValue: sysData })(
-            <RadioGroup options={sysYesNo} onChange={handleChange.bind(null, 'sysData')} />
-          )}
         </FilterItem>
       </Col>
       <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
